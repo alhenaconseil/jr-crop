@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    
+
     <title>jr-crop demo</title>
 
     <link href="/bower/ionic/release/css/ionic.css" rel="stylesheet">
@@ -26,9 +26,9 @@
     }
     </style>
   </head>
- 
+
   <body>
-    
+
     <div ng-controller="MainController">
       <ion-header-bar class="bar-positive">
         <h1 class="title">Ionic Delete/Option Buttons</h1>
@@ -43,7 +43,7 @@
       </ion-content>
 
     </div>
-    
+
     <script id="result-cropped.html" type="text/ng-template">
       <div class="modal">
         <ion-header-bar class="bar bar-header bar-positive">
@@ -55,7 +55,7 @@
         </ion-content>
       </div>
     </script>
-    
+
     <script>
     angular.module('cropper', ['ionic', 'jrCrop'])
 
@@ -72,7 +72,8 @@
         $jrCrop.crop({
           url: image,
           width: 200,
-          height: 200
+          height: 200,
+          title: 'Zoomer et centrer'
         }).then(function(canvas) {
           $ionicModal.fromTemplateUrl('result-cropped.html', function(modal) {
             $scope.modal = modal;

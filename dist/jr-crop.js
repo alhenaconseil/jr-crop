@@ -14,17 +14,23 @@ angular.module('jrCrop', [])
 function($ionicModal, $rootScope, $q) {
 
   var template = '<div class="jr-crop modal">' +
+                    '<div class="bar bar-header bar-positive">' +
+                      '<h1 class="title">{{title}}</h1>' +
+                    '</div>' +
+
                     '<div class="jr-crop-center-container">' +
                       '<div class="jr-crop-img" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
                     '<div class="jr-crop-center-container">' +
                       '<div class="jr-crop-select" style="overflow: hidden" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
-                    '<ion-footer-bar class="footer">' +
-                      '<button class="button button-clear" ng-click="cancel()"><i class="ion-close-round"></i></button>' +
-                      '<div class="title">{{title}}</div>' +
-                      '<button class="button button-clear" ng-click="crop()"><i class="ion-checkmark-round"></i></button>' +
-                    '</div>' +
+
+                    '<footer class="footer">' +
+                      '<nav class="tabs tabs-icon-only tabs-positive">' +
+                        '<a class="tab-item" ng-click="cancel()"><i class="ion-close-round"></i></a>' +
+                        '<a class="tab-item" ng-click="crop()"><i class="ion-checkmark-round"></i></a>' +
+                      '</nav>' +
+                    '</footer>' +
                   '</div>';
 
   var jrCropController = ionic.views.View.inherit({
