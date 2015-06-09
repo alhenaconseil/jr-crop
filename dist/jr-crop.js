@@ -20,10 +20,10 @@ function($ionicModal, $rootScope, $q) {
                     '<div class="jr-crop-center-container">' +
                       '<div class="jr-crop-select" style="overflow: hidden" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
-                    '<div class="bar bar-footer bar-dark jr-crop-footer">' +
-                      '<button class="button button-clear" ng-click="cancel()">{{cancelText}}</button>' +
+                    '<ion-footer-bar class="footer">' +
+                      '<button class="button button-clear" ng-click="cancel()"><i class="ion-close-round"></i></button>' +
                       '<div class="title">{{title}}</div>' +
-                      '<button class="button button-clear" ng-click="crop()">{{chooseText}}</button>' +
+                      '<button class="button button-clear" ng-click="crop()"><i class="ion-checkmark-round"></i></button>' +
                     '</div>' +
                   '</div>';
 
@@ -211,7 +211,7 @@ function($ionicModal, $rootScope, $q) {
     /**
      * Calculate the new image from the values calculated by
      * user input. Return a canvas-object with the image on it.
-     * 
+     *
      * Note: It doesn't actually downsize the image, it only returns
      * a cropped version. Since there's inconsistenties in image-quality
      * when downsizing it's up to the developer to implement this. Preferably
@@ -225,7 +225,7 @@ function($ionicModal, $rootScope, $q) {
       canvas.width = this.options.width / this.scale;
       canvas.height = this.options.height / this.scale;
 
-      // The full proportions 
+      // The full proportions
       var currWidth = this.imgWidth * this.scale;
       var currHeight = this.imgHeight * this.scale;
 
@@ -249,7 +249,7 @@ function($ionicModal, $rootScope, $q) {
      */
     loadImage: function() {
       var promise = $q.defer();
-      
+
       // Load the image and resolve with the DOM node when done.
       angular.element('<img />')
         .bind('load', function(e) {
