@@ -2,9 +2,10 @@ angular.module('jrCrop', [])
 
 .factory('$jrCrop', [
   '$ionicModal',
+  '$ionicLoading',
   '$rootScope',
   '$q',
-function($ionicModal, $rootScope, $q) {
+function($ionicModal, $ionicLoading, $rootScope, $q) {
 
   var template = '<div class="jr-crop modal">' +
                     '<div class="bar bar-header bar-positive">' +
@@ -217,6 +218,9 @@ function($ionicModal, $rootScope, $q) {
      * on the server.
      */
     crop: function() {
+      // Show loading (usefull when processing big image)
+      $ionicLoading.show();
+
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
 
@@ -240,6 +244,11 @@ function($ionicModal, $rootScope, $q) {
 
       this.options.modal.remove();
       this.promise.resolve(canvas);
+
+      // Hide loading
+      this.promise.promise.then(function() {
+        $ionicLoading.hide();
+      });
     },
 
     /**
