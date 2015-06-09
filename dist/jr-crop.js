@@ -9,10 +9,9 @@ angular.module('jrCrop', [])
 
 .factory('$jrCrop', [
   '$ionicModal',
-  '$ionicLoading',
   '$rootScope',
   '$q',
-function($ionicModal, $ionicLoading, $rootScope, $q) {
+function($ionicModal, $rootScope, $q) {
 
   var template = '<div class="jr-crop modal">' +
                     '<div class="bar bar-header bar-positive">' +
@@ -59,7 +58,7 @@ function($ionicModal, $ionicLoading, $rootScope, $q) {
       var self = this;
 
       self.options = options;
-      self.promise = $q.defer();
+      self.mainDeferred = $q.defer();
       self.loadImage().then(function(elem) {
         self.imgWidth = elem.naturalWidth;
         self.imgHeight = elem.naturalHeight;
@@ -104,7 +103,7 @@ function($ionicModal, $ionicLoading, $rootScope, $q) {
       var self = this;
 
       self.options.modal.remove().then(function() {
-        self.promise.reject('canceled');
+        self.mainDeferred.reject('canceled');
       });
     },
 
@@ -225,9 +224,6 @@ function($ionicModal, $ionicLoading, $rootScope, $q) {
      * on the server.
      */
     crop: function() {
-      // Show loading (usefull when processing big image)
-      $ionicLoading.show();
-
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
 
@@ -250,12 +246,7 @@ function($ionicModal, $ionicLoading, $rootScope, $q) {
       context.drawImage(this.imgFull, sourceX, sourceY);
 
       this.options.modal.remove();
-      this.promise.resolve(canvas);
-
-      // Hide loading
-      this.promise.promise.then(function() {
-        $ionicLoading.hide();
-      });
+      this.mainDeferred.resolve(canvas.toDataURL());
     },
 
     /**
@@ -263,18 +254,18 @@ function($ionicModal, $ionicLoading, $rootScope, $q) {
      * Return Promise that will fail when unable to load image.
      */
     loadImage: function() {
-      var promise = $q.defer();
+      var imageDeferred = $q.defer();
 
       // Load the image and resolve with the DOM node when done.
       angular.element('<img />')
         .bind('load', function(e) {
-          promise.resolve(this);
+          imageDeferred.resolve(this);
         })
-        .bind('error', promise.reject)
+        .bind('error', imageDeferred.reject)
         .prop('src', this.options.url);
 
       // Return the promise
-      return promise.promise;
+      return imageDeferred.promise;
     }
   });
 
@@ -300,7 +291,7 @@ function($ionicModal, $ionicLoading, $rootScope, $q) {
 
       // Show modal and initialize cropper.
       return scope.modal.show().then(function() {
-        return (new jrCropController(scope)).promise.promise;
+        return (new jrCropController(scope)).mainDeferred.promise;
       });
     },
 
