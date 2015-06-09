@@ -275,7 +275,7 @@ function($ionicModal, $ionicLoading, $rootScope, $q) {
     defaultOptions: {
       width: 0,
       height: 0,
-      aspectRatio: 0,
+      aspectRatio: 1,
       cancelText: 'Cancel',
       chooseText: 'Choose'
     },
@@ -306,7 +306,8 @@ function($ionicModal, $ionicLoading, $rootScope, $q) {
 
       if (options.aspectRatio) {
 
-        if (!options.width && options.height) {
+        // Width and height aren't set
+        if (!options.width && !options.height) {
           options.width = 200;
         }
 
