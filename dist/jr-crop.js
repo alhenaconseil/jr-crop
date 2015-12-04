@@ -5,6 +5,7 @@
  * @author Joram Ruitenschild
  * @license MIT
  */
+
 angular.module('jrCrop', [])
 
 .factory('$jrCrop', [
@@ -217,7 +218,7 @@ function($ionicModal, $rootScope, $q) {
     /**
      * Calculate the new image from the values calculated by
      * user input. Return a canvas-object with the image on it.
-     * 
+     *
      * Note: It doesn't actually downsize the image, it only returns
      * a cropped version. Since there's inconsistenties in image-quality
      * when downsizing it's up to the developer to implement this. Preferably

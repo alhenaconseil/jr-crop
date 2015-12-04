@@ -210,7 +210,7 @@ function($ionicModal, $rootScope, $q) {
     /**
      * Calculate the new image from the values calculated by
      * user input. Return a canvas-object with the image on it.
-     * 
+     *
      * Note: It doesn't actually downsize the image, it only returns
      * a cropped version. Since there's inconsistenties in image-quality
      * when downsizing it's up to the developer to implement this. Preferably
@@ -266,9 +266,9 @@ function($ionicModal, $rootScope, $q) {
     defaultOptions: {
       width: 0,
       height: 0,
-      aspectRatio: 0,
-      cancelText: 'Cancel',
-      chooseText: 'Choose',
+      aspectRatio: 1,
+      cancelText: 'Annuler',
+      chooseText: 'Choisir',
       template: template,
       circle: false
     },
