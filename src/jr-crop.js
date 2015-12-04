@@ -15,7 +15,7 @@ function($ionicModal, $rootScope, $q) {
                       '<div class="jr-crop-img" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
                     '<div class="jr-crop-center-container">' +
-                      '<div class="jr-crop-select" style="overflow: hidden" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
+                      '<div class="jr-crop-select" ng-class="{\'jr-crop-select-circle\': circle}" style="overflow: hidden" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
 
                     '<footer class="footer">' +
@@ -51,7 +51,7 @@ function($ionicModal, $rootScope, $q) {
       var self = this;
 
       self.options = options;
-      self.mainDeferred = $q.defer();
+      self.promise = $q.defer();
       self.loadImage().then(function(elem) {
         self.imgWidth = elem.naturalWidth;
         self.imgHeight = elem.naturalHeight;
@@ -96,7 +96,7 @@ function($ionicModal, $rootScope, $q) {
       var self = this;
 
       self.options.modal.remove().then(function() {
-        self.mainDeferred.reject('canceled');
+        self.promise.reject('canceled');
       });
     },
 
@@ -210,7 +210,7 @@ function($ionicModal, $rootScope, $q) {
     /**
      * Calculate the new image from the values calculated by
      * user input. Return a canvas-object with the image on it.
-     *
+     * 
      * Note: It doesn't actually downsize the image, it only returns
      * a cropped version. Since there's inconsistenties in image-quality
      * when downsizing it's up to the developer to implement this. Preferably
@@ -239,7 +239,7 @@ function($ionicModal, $rootScope, $q) {
       context.drawImage(this.imgFull, sourceX, sourceY);
 
       this.options.modal.remove();
-      this.mainDeferred.resolve(canvas.toDataURL());
+      this.promise.resolve(canvas);
     },
 
     /**
@@ -247,18 +247,18 @@ function($ionicModal, $rootScope, $q) {
      * Return Promise that will fail when unable to load image.
      */
     loadImage: function() {
-      var imageDeferred = $q.defer();
+      var promise = $q.defer();
 
       // Load the image and resolve with the DOM node when done.
       angular.element('<img />')
         .bind('load', function(e) {
-          imageDeferred.resolve(this);
+          promise.resolve(this);
         })
-        .bind('error', imageDeferred.reject)
+        .bind('error', promise.reject)
         .prop('src', this.options.url);
 
       // Return the promise
-      return imageDeferred.promise;
+      return promise.promise;
     }
   });
 
@@ -266,9 +266,11 @@ function($ionicModal, $rootScope, $q) {
     defaultOptions: {
       width: 0,
       height: 0,
-      aspectRatio: 1,
+      aspectRatio: 0,
       cancelText: 'Cancel',
-      chooseText: 'Choose'
+      chooseText: 'Choose',
+      template: template,
+      circle: false
     },
 
     crop: function(options) {
@@ -278,13 +280,13 @@ function($ionicModal, $rootScope, $q) {
 
       ionic.extend(scope, options);
 
-      scope.modal = $ionicModal.fromTemplate(template, {
+      scope.modal = $ionicModal.fromTemplate(options.template, {
         scope: scope
       });
 
       // Show modal and initialize cropper.
       return scope.modal.show().then(function() {
-        return (new jrCropController(scope)).mainDeferred.promise;
+        return (new jrCropController(scope)).promise.promise;
       });
     },
 
@@ -297,8 +299,7 @@ function($ionicModal, $rootScope, $q) {
 
       if (options.aspectRatio) {
 
-        // Width and height aren't set
-        if (!options.width && !options.height) {
+        if (!options.width && options.height) {
           options.width = 200;
         }
 
